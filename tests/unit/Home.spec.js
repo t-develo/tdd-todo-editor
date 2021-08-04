@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { expect } from '@jest/globals';
-import Home from '../../src/views/Home.vue';
+import Home from '@/views/Home.vue';
 
 describe('Home.vue', () => {
     test('Mount Instance', () => {

@@ -1,6 +1,6 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import { expect } from '@jest/globals';
-import Counter from '../../src/components/Counter.vue';
+import Counter from '@/components/Counter.vue';
 
 describe('Counter.vue', () => {
     test('increments count when button before click', () => {
