@@ -2,6 +2,7 @@ module.exports = {
     env: {
         browser: true,
         es6: true,
+        'jest/globals': true,
     },
     extends: ['plugin:vue/essential', 'google', 'prettier', '@vue/prettier'],
     globals: {
@@ -12,7 +13,7 @@ module.exports = {
         ecmaVersion: 2018,
         parser: 'babel-eslint',
     },
-    plugins: ['vue'],
+    plugins: ['vue', 'jest'],
     rules: {},
     overrides: [
         {
