@@ -62,3 +62,12 @@ describe('todoの表示', () => {
         expect(todoList).toStrictEqual(todo);
     });
 });
+
+describe('ToDoの管理', () => {
+    test('チェックの付け外しができる', () => {
+        // 準備
+        // 実行
+        // 検証
+        expect(true).toBeTruthy();
+    });
+});
