@@ -1,10 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
 import { expect } from '@jest/globals';
-import Home from '@/views/Home.vue';
+import Todo from 'views/Todo.vue';
 
-describe('Home.vue', () => {
+describe('Todo.vue', () => {
     test('Mount Instance', () => {
-        const wrapper = shallowMount(Home);
+        const wrapper = shallowMount(Todo);
         expect(wrapper.vm).toBeTruthy();
     });
 });
