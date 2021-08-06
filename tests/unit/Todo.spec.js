@@ -8,3 +8,14 @@ describe('Todo.vue', () => {
         expect(wrapper.vm).toBeTruthy();
     });
 });
+
+describe('Todoの表示', () => {
+    test('todoが列挙できる', () => {
+        // 準備
+
+        // 実行
+
+        // 検証
+        expect(true).toBeTruthy();
+    });
+});
