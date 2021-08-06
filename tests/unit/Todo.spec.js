@@ -13,6 +13,16 @@ describe('todoの表示', () => {
     test('todoが列挙できる', () => {
         // 準備
         const wrapper = shallowMount(Todo);
+
+        // 実行
+        const todoList = wrapper.find('li');
+
+        // 検証
+        expect(todoList).not.toBeNull();
+    });
+    test('todoが大項目と中項目にレベル分け出来る', () => {
+        // 準備
+        const wrapper = shallowMount(Todo);
         const todo = [
             {
                 unit: {
