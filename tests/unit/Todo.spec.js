@@ -9,13 +9,46 @@ describe('Todo.vue', () => {
     });
 });
 
-describe('Todoの表示', () => {
+describe('todoの表示', () => {
     test('todoが列挙できる', () => {
         // 準備
-
+        const wrapper = shallowMount(Todo);
+        const todo = [
+            {
+                unit: {
+                    title: 'todoの表示',
+                    module: [
+                        {
+                            title: 'todoが列挙できる',
+                            status: 'complete',
+                        },
+                        {
+                            title: ' 大項目と中項目にレベル分け出来る',
+                            status: 'incomplete',
+                        },
+                    ],
+                },
+            },
+            {
+                unit: {
+                    title: ' ToDoの管理',
+                    module: [
+                        {
+                            title: 'チェックの付け外し',
+                            status: 'incomplete',
+                        },
+                        {
+                            title: ' 状態のをMarkdownフォーマットにして表示出来る',
+                            status: 'incomplete',
+                        },
+                    ],
+                },
+            },
+        ];
         // 実行
+        const todoList = wrapper.vm.todoList;
 
         // 検証
-        expect(true).toBeTruthy();
+        expect(todoList).toStrictEqual(todo);
     });
 });
