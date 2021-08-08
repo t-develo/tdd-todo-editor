@@ -15,6 +15,7 @@ module.exports = {
     },
     plugins: ['vue', 'jest'],
     rules: {},
+    'require-jsdoc': false,
     overrides: [
         {
             files: [

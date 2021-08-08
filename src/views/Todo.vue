@@ -8,15 +8,12 @@
                         v-for="(unitTodo, unitIndex) in todoList"
                         :key="unitIndex"
                     >
-                        <input
-                            type="checkbox"
-                            v-model="unitTodo.unit.complete"
-                            @click="toggleUnitStatus(unitIndex)"
-                            :id="'unit-todo-' + unitIndex"
-                        />
-                        <label :for="'unit-todo-' + unitIndex">{{
-                            unitTodo.unit.title
-                        }}</label>
+                        <i
+                            v-if="unitTodo.unit.complete"
+                            class="fas fa-check"
+                        ></i>
+                        <i v-else class="fas fa-times"></i>
+                        {{ unitTodo.unit.title }}
                         <button @click="deleteUnitTodo(unitIndex)">
                             このユニットtodoを削除する
                         </button>
@@ -26,32 +23,36 @@
                                     .unit.module"
                                 :key="moduleIndex"
                             >
-                                <input
-                                    type="checkbox"
-                                    v-model="moduleTodo.complete"
+                                <i
+                                    v-if="moduleTodo.complete"
+                                    class="fas fa-check"
+                                ></i>
+                                <i v-else class="fas fa-times"></i>
+                                <span
                                     @click="
                                         toggleModuleStatus(
                                             unitIndex,
                                             moduleIndex
-                                        )
+                                        ),
+                                            checkUnitStatus(unitIndex)
                                     "
+                                    class="module-todo"
                                     :id="
                                         'module-todo-' +
                                         unitIndex +
                                         '-' +
                                         moduleIndex
                                     "
-                                />
-                                <label
-                                    :for="
-                                        'module-todo-' +
-                                        unitIndex +
-                                        '-' +
-                                        moduleIndex
+                                    >{{ moduleTodo.title }}</span
+                                >
+
+                                <button
+                                    @click="
+                                        deleteModuleTodo(unitIndex, moduleIndex)
                                     "
                                 >
-                                    {{ moduleTodo.title }}
-                                </label>
+                                    このモジュールtodoを削除する
+                                </button>
                             </li>
                         </ul>
                     </li>
@@ -181,6 +182,25 @@ export default {
         deleteUnitTodo: function (unitTodoIndex) {
             this.todoList.splice(unitTodoIndex, 1);
         },
+        deleteModuleTodo: function (unitTodoIndex, moduleTodoIndex) {
+            this.todoList[unitTodoIndex].unit.module.splice(moduleTodoIndex, 1);
+        },
+        checkUnitStatus: function (unitIndex) {
+            if (this.todoList[unitIndex].unit.module.length === 0) {
+                this.todoList[unitIndex].unit.complete = false;
+            }
+            const completeLength = this.todoList[unitIndex].unit.module.filter(
+                (module) => module.complete === true
+            ).length;
+
+            if (
+                this.todoList[unitIndex].unit.module.length === completeLength
+            ) {
+                this.todoList[unitIndex].unit.complete = true;
+            } else {
+                this.todoList[unitIndex].unit.complete = false;
+            }
+        },
     },
 };
 </script>
@@ -209,5 +229,17 @@ li {
 
 .todo-markdown {
     grid-column: 2/3;
+}
+
+.fa-times {
+    color: red;
+}
+
+.fa-check {
+    color: lightgreen;
+}
+
+.module-todo {
+    cursor : pointer;
 }
 </style>

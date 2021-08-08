@@ -21,19 +21,16 @@ const mockTodoList = [
         },
     },
 ];
+
 // 各テスト実行前に実行されるセットアップ
 beforeEach(() => {
     wrapper = shallowMount(Todo, {
         data: function () {
             return {
-                todoList: mockTodoList,
+                todoList: JSON.parse(JSON.stringify(mockTodoList)),
             };
         },
     });
-});
-
-afterEach(() => {
-    wrapper.vm.todoList = mockTodoList;
 });
 
 describe('Todo.vue', () => {
@@ -64,14 +61,6 @@ describe('todoの表示', () => {
 });
 
 describe('ToDoの管理', () => {
-    test('ユニットのチェックの付け外しができる', async () => {
-        // 準備
-        // 実行
-        await wrapper.find('#unit-todo-0').trigger('click');
-
-        // 検証
-        expect(wrapper.vm.todoList[0].unit.complete).toBeTruthy();
-    });
     test('モジュールのチェックの付け外しができる', async () => {
         // 準備
         // 実行
@@ -87,7 +76,7 @@ describe('ToDoの管理', () => {
 
         // 検証
         expect(todoMarkdown).toBe(
-            '# todo list\r\n\r\n- [x] テストToDoの表示\r\n  - [x] todoが列挙できる\r\n  - [x] 大項目と中項目にレベル分け出来る\r\n'
+            '# todo list\r\n\r\n- [ ] テストToDoの表示\r\n  - [x] todoが列挙できる\r\n  - [ ] 大項目と中項目にレベル分け出来る\r\n'
         );
     });
     test('ユニットのtodoを画面から追加できる', async () => {
@@ -124,4 +113,26 @@ describe('ToDoの管理', () => {
         // 検証
         expect(wrapper.vm.todoList.length).toBe(beforeAction - 1);
     });
+    test('選択したモジュールのtodoを画面から削除できる', () => {
+        // 準備
+        const beforeAction = wrapper.vm.todoList[0].unit.module.length;
+
+        // 実行
+        wrapper.vm.deleteModuleTodo(0, 0);
+
+        // 検証
+        expect(wrapper.vm.todoList[0].unit.module.length).toBe(
+            beforeAction - 1
+        );
+    });
+    test('モジュールtodoがすべてチェックされたら自動でユニットtodoがチェックされる', ()=> {
+        // 準備
+        // 実行
+        wrapper.vm.todoList[0].unit.module[0].complete = true;
+        wrapper.vm.todoList[0].unit.module[1].complete = true;
+        wrapper.vm.checkUnitStatus(0);
+
+        // 検証
+        expect(wrapper.vm.todoList[0].unit.complete).toBeTruthy();
+    })
 });
