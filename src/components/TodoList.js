@@ -9,7 +9,7 @@ export const todoList = [
                     complete: true,
                 },
                 {
-                    title: ' 大項目と中項目にレベル分け出来る',
+                    title: '大項目と中項目にレベル分け出来る',
                     complete: false,
                 },
             ],
@@ -25,7 +25,7 @@ export const todoList = [
                     complete: false,
                 },
                 {
-                    title: ' 状態のをMarkdownフォーマットにして表示出来る',
+                    title: '状態のをMarkdownフォーマットにして表示出来る',
                     complete: false,
                 },
             ],

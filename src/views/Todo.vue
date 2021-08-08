@@ -3,6 +3,7 @@
         <h1>TDD todoリスト</h1>
         <div class="todo">
             <div class="todo-list">
+                <p>todoリスト</p>
                 <ul class="unit-todo-list">
                     <li
                         v-for="(unitTodo, unitIndex) in todoList"
@@ -45,7 +46,6 @@
                                     "
                                     >{{ moduleTodo.title }}</span
                                 >
-
                                 <button
                                     @click="
                                         deleteModuleTodo(unitIndex, moduleIndex)
@@ -57,7 +57,9 @@
                         </ul>
                     </li>
                 </ul>
+                <div class="separator"></div>
                 <div>
+                    <p>ユニットtodoを追加する</p>
                     <input
                         type="text"
                         v-model="newUnitTodoTitle"
@@ -66,8 +68,14 @@
                     <button @click="addUnitTodo()" id="add-unit-todo">
                         ユニットtodoを追加する
                     </button>
+                    <pre>
+                        <code>
+{{ publishUnitTodoTestCode(newUnitTodoTitle) }}
+                        </code>
+                    </pre>
                 </div>
                 <div>
+                    <p>モジュールtodoを追加する</p>
                     <select v-model="unitTodoIndex">
                         モジュールtodoを追加するユニットtodoを選択する
                         <option
@@ -88,13 +96,18 @@
                         <button @click="addModuleTodo()" id="add-module-todo">
                             モジュールtodoを追加する
                         </button>
+                        <pre>
+                        <code>
+{{ publishModuleTodoTestCode(newModuleTodoTitle) }}
+                        </code>
+                    </pre>
                     </div>
                 </div>
             </div>
             <div class="todo-markdown">
-                <p>Markdown プレビュー</p>
+                <span>Markdown プレビュー</span>
                 <button @click="copyToClipboard()">
-                    <i class="fas fa-clipboard"></i>
+                    <i class="fas fa-copy"></i>
                 </button>
                 <pre>
                 <code>
@@ -186,20 +199,25 @@ export default {
             this.todoList[unitTodoIndex].unit.module.splice(moduleTodoIndex, 1);
         },
         checkUnitStatus: function (unitIndex) {
-            if (this.todoList[unitIndex].unit.module.length === 0) {
+            const moduleLength = this.todoList[unitIndex].unit.module.length;
+            if (moduleLength === 0) {
                 this.todoList[unitIndex].unit.complete = false;
             }
             const completeLength = this.todoList[unitIndex].unit.module.filter(
                 (module) => module.complete === true
             ).length;
 
-            if (
-                this.todoList[unitIndex].unit.module.length === completeLength
-            ) {
+            if (moduleLength === completeLength) {
                 this.todoList[unitIndex].unit.complete = true;
             } else {
                 this.todoList[unitIndex].unit.complete = false;
             }
+        },
+        publishUnitTodoTestCode: function (unitTodoTitle) {
+            return `describe('${unitTodoTitle}', () => {\r\n    \r\n});\r\n`;
+        },
+        publishModuleTodoTestCode: function (moduleTodoTitle) {
+            return `test('${moduleTodoTitle}', () => {\r\n    // 準備\r\n    // 実行\r\n    // 検証\r\n    expect(true).toBeTruthy();\r\n});`;
         },
     },
 };
@@ -217,18 +235,26 @@ li {
     list-style: none;
 }
 
+.fas {
+    height: 16px;
+    min-width: 16px;
+}
+
 .todo {
     display: grid;
-    grid-template-columns: 20%;
+    grid-template-columns: 10% 50% 30%;
 }
 
 .todo-list {
+    grid-row: 1/2;
     text-align: left;
     grid-column: 2/3;
 }
 
 .todo-markdown {
-    grid-column: 2/3;
+    grid-row: 1/2;
+    grid-column: 3/4;
+    margin-top: 5%;
 }
 
 .fa-times {
@@ -240,6 +266,10 @@ li {
 }
 
 .module-todo {
-    cursor : pointer;
+    cursor: pointer;
+}
+
+.separator {
+    border: lightgray dashed 2px;
 }
 </style>

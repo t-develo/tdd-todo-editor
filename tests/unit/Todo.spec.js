@@ -125,7 +125,7 @@ describe('ToDoの管理', () => {
             beforeAction - 1
         );
     });
-    test('モジュールtodoがすべてチェックされたら自動でユニットtodoがチェックされる', ()=> {
+    test('モジュールtodoがすべてチェックされたら自動でユニットtodoがチェックされる', () => {
         // 準備
         // 実行
         wrapper.vm.todoList[0].unit.module[0].complete = true;
@@ -134,5 +134,31 @@ describe('ToDoの管理', () => {
 
         // 検証
         expect(wrapper.vm.todoList[0].unit.complete).toBeTruthy();
-    })
+    });
+});
+
+describe('テスト駆動をサポートする', () => {
+    test('大項目を作った時にテンプレのテストコードを発行する(jest)', () => {
+        // 準備
+        const newUnitTodo = '新しいユニットtodo';
+
+        // 実行
+        const publishUnitTestCode =
+            wrapper.vm.publishUnitTodoTestCode(newUnitTodo);
+
+        // 検証
+        expect(publishUnitTestCode).toBe(
+            `describe('${newUnitTodo}', () => {\r\n    \r\n});\r\n`
+        );
+    });
+    test('中項目を作った時に必ず結果がTRUEとなるような非同期なセットアップテストコードを発行する(jest)', () => {
+        // 準備
+        const newModuleTodo = '新しいモジュールtodo';
+        
+        // 実行
+        const publishModuleTestCode = wrapper.vm.publishModuleTodoTestCode(newModuleTodo);
+
+        // 検証
+        expect(publishModuleTestCode).toBe(`test('${newModuleTodo}', () => {\r\n    // 準備\r\n    // 実行\r\n    // 検証\r\n    expect(true).toBeTruthy();\r\n});`);
+    });
 });
