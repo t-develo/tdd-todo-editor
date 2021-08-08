@@ -1,61 +1,66 @@
 <template>
-    <div class="todo">
+    <div>
         <h1>TDD todoリスト</h1>
-        <div>
-            <ul class="unit-todo-list">
-                <li
-                    v-for="(unitTodo, unitIndex) in todoList"
-                    :key="unitTodo.unit.title"
-                >
-                    <input
-                        type="checkbox"
-                        v-model="unitTodo.unit.complete"
-                        @click="toggleUnitStatus(unitIndex)"
-                        :id="'unit-todo-' + unitIndex"
-                    />
-                    <label :for="'unit-todo-' + unitIndex">{{
-                        unitTodo.unit.title
-                    }}</label>
-                    <ul class="module-todo-list">
-                        <li
-                            v-for="(moduleTodo, moduleIndex) in unitTodo.unit
-                                .module"
-                            :key="moduleTodo.title"
-                        >
-                            <input
-                                type="checkbox"
-                                v-model="moduleTodo.complete"
-                                @click="
-                                    toggleModuleStatus(unitIndex, moduleIndex)
-                                "
-                                :id="
-                                    'module-todo-' +
-                                    unitIndex +
-                                    '-' +
-                                    moduleIndex
-                                "
-                            />
-                            <label
-                                :for="
-                                    'module-todo-' +
-                                    unitIndex +
-                                    '-' +
-                                    moduleIndex
-                                "
+        <div class="todo">
+            <div class="todo-list">
+                <ul class="unit-todo-list">
+                    <li
+                        v-for="(unitTodo, unitIndex) in todoList"
+                        :key="unitTodo.unit.title"
+                    >
+                        <input
+                            type="checkbox"
+                            v-model="unitTodo.unit.complete"
+                            @click="toggleUnitStatus(unitIndex)"
+                            :id="'unit-todo-' + unitIndex"
+                        />
+                        <label :for="'unit-todo-' + unitIndex">{{
+                            unitTodo.unit.title
+                        }}</label>
+                        <ul class="module-todo-list">
+                            <li
+                                v-for="(moduleTodo, moduleIndex) in unitTodo
+                                    .unit.module"
+                                :key="moduleTodo.title"
                             >
-                                {{ moduleTodo.title }}
-                            </label>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-        <div>
-            <pre>
+                                <input
+                                    type="checkbox"
+                                    v-model="moduleTodo.complete"
+                                    @click="
+                                        toggleModuleStatus(
+                                            unitIndex,
+                                            moduleIndex
+                                        )
+                                    "
+                                    :id="
+                                        'module-todo-' +
+                                        unitIndex +
+                                        '-' +
+                                        moduleIndex
+                                    "
+                                />
+                                <label
+                                    :for="
+                                        'module-todo-' +
+                                        unitIndex +
+                                        '-' +
+                                        moduleIndex
+                                    "
+                                >
+                                    {{ moduleTodo.title }}
+                                </label>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="todo-markdown">
+                <pre>
                 <code>
 {{ getTodoMarkdown() }}
                 </code>
             </pre>
+            </div>
         </div>
     </div>
 </template>
@@ -109,5 +114,24 @@ pre {
     background-color: lightgray;
     font-weight: bold;
     text-align: left;
+}
+
+ul,
+li {
+    list-style: none;
+}
+
+.todo {
+    display: grid;
+    grid-template-columns: 20%;
+}
+
+.todo-list {
+    text-align: left;
+    grid-column: 2/3;
+}
+
+.todo-markdown {
+    grid-column: 2/3;
 }
 </style>
