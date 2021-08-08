@@ -6,7 +6,7 @@
                 <ul class="unit-todo-list">
                     <li
                         v-for="(unitTodo, unitIndex) in todoList"
-                        :key="unitTodo.unit.title"
+                        :key="unitIndex"
                     >
                         <input
                             type="checkbox"
@@ -21,7 +21,7 @@
                             <li
                                 v-for="(moduleTodo, moduleIndex) in unitTodo
                                     .unit.module"
-                                :key="moduleTodo.title"
+                                :key="moduleIndex"
                             >
                                 <input
                                     type="checkbox"
@@ -53,8 +53,45 @@
                         </ul>
                     </li>
                 </ul>
+                <div>
+                    <input
+                        type="text"
+                        v-model="newUnitTodoTitle"
+                        id="new-unit-todo-title"
+                    />
+                    <button @click="addUnitTodo()" id="add-unit-todo">
+                        ユニットtodoを追加する
+                    </button>
+                </div>
+                <div>
+                    <select v-model="unitTodoIndex">
+                        モジュールtodoを追加するユニットtodoを選択する
+                        <option
+                            v-for="(unitTodo, index) in getUnitTodoList"
+                            :key="index"
+                            :value="index"
+                        >
+                            {{ unitTodo }}
+                        </option>
+                    </select>
+                    <div>
+                        <span>∟</span>
+                        <input
+                            type="text"
+                            v-model="newModuleTodoTitle"
+                            id="new-module-todo-title"
+                        />
+                        <button @click="addModuleTodo()" id="add-module-todo">
+                            モジュールtodoを追加する
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="todo-markdown">
+                <p>Markdown プレビュー</p>
+                <button @click="copyToClipboard()">
+                    <i class="fas fa-clipboard"></i>
+                </button>
                 <pre>
                 <code>
 {{ getTodoMarkdown() }}
@@ -73,7 +110,17 @@ export default {
     data: function () {
         return {
             todoList: todoList,
+            newUnitTodoTitle: '',
+            newModuleTodoTitle: '',
+            unitTodoIndex: null,
         };
+    },
+    computed: {
+        getUnitTodoList: function () {
+            return this.todoList.map((todo) => {
+                return todo.unit.title;
+            });
+        },
     },
     methods: {
         toggleUnitStatus: function (unitIndex) {
@@ -104,6 +151,29 @@ export default {
                 return brankCheck + context;
             });
             return header + markdownText.join('\r\n');
+        },
+        addUnitTodo: function () {
+            const newUnitTodo = {
+                unit: {
+                    title: this.newUnitTodoTitle,
+                    complete: false,
+                    module: [],
+                },
+            };
+            this.todoList.push(newUnitTodo);
+        },
+        addModuleTodo: function () {
+            const newModuleTodo = {
+                title: this.newModuleTodoTitle,
+                complete: false,
+            };
+            this.todoList[this.unitTodoIndex].unit.module.push(newModuleTodo);
+        },
+        copyToClipboard: function () {
+            const str = this.getTodoMarkdown();
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(str);
+            }
         },
     },
 };

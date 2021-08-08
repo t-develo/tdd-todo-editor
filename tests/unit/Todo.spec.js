@@ -86,4 +86,28 @@ describe('ToDoの管理', () => {
             '# todo list\r\n\r\n- [x] テストToDoの表示\r\n  - [x] todoが列挙できる\r\n  - [x] 大項目と中項目にレベル分け出来る\r\n'
         );
     });
+    test('ユニットのtodoを画面から追加できる', async () => {
+        // 準備
+        wrapper.vm.newUnitTodoTitle = 'ユニットtodoの追加';
+
+        // 実行
+        await wrapper.find('#add-unit-todo').trigger('click');
+
+        // 検証
+        expect(wrapper.vm.todoList[1].unit.title).toBe('ユニットtodoの追加');
+        expect(wrapper.vm.todoList[1].unit.complete).toBeFalsy();
+    });
+    test('モジュールのtodoを画面から追加できる', () => {
+        // 準備
+        wrapper.vm.unitTodoIndex = 0;
+        wrapper.vm.newModuleTodoTitle = 'モジュールtodoの追加';
+
+        // 実行
+        wrapper.vm.addModuleTodo();
+
+        // 検証
+        expect(wrapper.vm.todoList[0].unit.module[2].title).toBe(
+            'モジュールtodoの追加'
+        );
+    });
 });
