@@ -17,6 +17,9 @@
                         <label :for="'unit-todo-' + unitIndex">{{
                             unitTodo.unit.title
                         }}</label>
+                        <button @click="deleteUnitTodo(unitIndex)">
+                            このユニットtodoを削除する
+                        </button>
                         <ul class="module-todo-list">
                             <li
                                 v-for="(moduleTodo, moduleIndex) in unitTodo
@@ -174,6 +177,9 @@ export default {
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(str);
             }
+        },
+        deleteUnitTodo: function (unitTodoIndex) {
+            this.todoList.splice(unitTodoIndex, 1);
         },
     },
 };

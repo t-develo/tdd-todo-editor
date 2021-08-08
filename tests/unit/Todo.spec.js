@@ -32,6 +32,10 @@ beforeEach(() => {
     });
 });
 
+afterEach(() => {
+    wrapper.vm.todoList = mockTodoList;
+});
+
 describe('Todo.vue', () => {
     test('Mount Instance', () => {
         expect(wrapper.vm).toBeTruthy();
@@ -109,5 +113,15 @@ describe('ToDoの管理', () => {
         expect(wrapper.vm.todoList[0].unit.module[2].title).toBe(
             'モジュールtodoの追加'
         );
+    });
+    test('選択したユニットのtodoを画面から削除できる', () => {
+        // 準備
+        const beforeAction = wrapper.vm.todoList.length;
+
+        // 実行
+        wrapper.vm.deleteUnitTodo(0);
+
+        // 検証
+        expect(wrapper.vm.todoList.length).toBe(beforeAction - 1);
     });
 });
