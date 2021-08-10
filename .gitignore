@@ -24,3 +24,4 @@ pnpm-debug.log*
 
 #User define
 coverage
+dist_electron
