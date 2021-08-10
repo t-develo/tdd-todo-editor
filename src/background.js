@@ -109,6 +109,6 @@ ipcMain.handle('file-open', async (event) => {
     return {
         status: true,
         path: path,
-        text: fs.readFileSync(path).toString(),
+        text: JSON.parse(fs.readFileSync(path, 'utf-8')),
     };
 });

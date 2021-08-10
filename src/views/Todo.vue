@@ -121,14 +121,13 @@
 </template>
 
 <script>
-import { todoList } from 'components/TodoList.js';
 import { ipcRenderer } from 'electron';
 
 export default {
     name: 'Todo',
     data: function () {
         return {
-            todoList: todoList,
+            todoList: [],
             newUnitTodoTitle: '',
             newModuleTodoTitle: '',
             unitTodoIndex: null,
@@ -223,8 +222,11 @@ export default {
         },
         invokeFileOpenProcess: function () {
             ipcRenderer.invoke('file-open').then((data) => {
-                console.log(data);
+                this.importData(data.text);
             });
+        },
+        importData: function (jsonData) {
+            this.todoList = jsonData;
         },
     },
 };

@@ -154,11 +154,27 @@ describe('テスト駆動をサポートする', () => {
     test('中項目を作った時に必ず結果がTRUEとなるような非同期なセットアップテストコードを発行する(jest)', () => {
         // 準備
         const newModuleTodo = '新しいモジュールtodo';
-        
+
         // 実行
-        const publishModuleTestCode = wrapper.vm.publishModuleTodoTestCode(newModuleTodo);
+        const publishModuleTestCode =
+            wrapper.vm.publishModuleTodoTestCode(newModuleTodo);
 
         // 検証
-        expect(publishModuleTestCode).toBe(`test('${newModuleTodo}', () => {\r\n    // 準備\r\n    // 実行\r\n    // 検証\r\n    expect(true).toBeTruthy();\r\n});`);
+        expect(publishModuleTestCode).toBe(
+            `test('${newModuleTodo}', () => {\r\n    // 準備\r\n    // 実行\r\n    // 検証\r\n    expect(true).toBeTruthy();\r\n});`
+        );
+    });
+});
+
+describe('結果の保存と読み込み(electron)', () => {
+    test('json形式のtodoを読み込んで表示する', () => {
+        // 準備
+        const testJsonData = JSON.parse(JSON.stringify(mockTodoList));
+
+        // 実行
+        wrapper.vm.importData(testJsonData);
+
+        // 検証
+        expect(wrapper.vm.todoList).toEqual(testJsonData);
     });
 });
