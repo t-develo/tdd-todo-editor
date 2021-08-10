@@ -31,10 +31,13 @@ module.exports = {
         '\\\\coverage\\\\',
         '\\\\dist\\\\',
         '\\\\tests\\\\',
+        '\\\\dist_electron\\\\',
+        '\\\\public\\\\',
         './*.config.js',
         './*rc.js',
         'src/router',
         'src/main.js',
+        'src/background.js',
     ],
 
     // Indicates which provider should be used to instrument code for coverage
