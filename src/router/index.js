@@ -10,11 +10,6 @@ const routes = [
         name: 'Todo',
         component: Todo,
     },
-    {
-        path: '/todo',
-        name: 'Todo',
-        component: Todo,
-    },
 ];
 
 const router = new VueRouter({

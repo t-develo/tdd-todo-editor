@@ -1,6 +1,7 @@
 <template>
     <div>
         <h1>TDD todoリスト</h1>
+        <button @click="invokeFileOpenProcess()">ファイルを開く</button>
         <div class="todo">
             <div class="todo-list">
                 <p>todoリスト</p>
@@ -121,6 +122,7 @@
 
 <script>
 import { todoList } from 'components/TodoList.js';
+import { ipcRenderer } from 'electron';
 
 export default {
     name: 'Todo',
@@ -218,6 +220,11 @@ export default {
         },
         publishModuleTodoTestCode: function (moduleTodoTitle) {
             return `test('${moduleTodoTitle}', () => {\r\n    // 準備\r\n    // 実行\r\n    // 検証\r\n    expect(true).toBeTruthy();\r\n});`;
+        },
+        invokeFileOpenProcess: function () {
+            ipcRenderer.invoke('file-open').then((data) => {
+                console.log(data);
+            });
         },
     },
 };
