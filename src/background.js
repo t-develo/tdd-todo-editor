@@ -105,10 +105,43 @@ if (isDevelopment) {
 
 ipcMain.handle('file-open', async (event) => {
     const paths = dialog.showOpenDialogSync(mainWin);
-    const path = paths[0];
+    if (paths) {
+        const path = paths[0];
+        return {
+            status: true,
+            path: path,
+            // text: JSON.parse(fs.readFileSync(path, 'utf-8')),
+            text: fs.readFileSync(path, 'utf-8'),
+        };
+    }
     return {
-        status: true,
-        path: path,
-        text: JSON.parse(fs.readFileSync(path, 'utf-8')),
+        status: false,
+    };
+});
+
+ipcMain.handle('write-file', async (event, arg) => {
+    const path = dialog.showSaveDialogSync(mainWin, {
+        filters: [
+            {
+                name: 'Markdown',
+                extensions: ['md'],
+            },
+        ],
+    });
+    if (path) {
+        fs.writeFileSync(path, arg, (error) => {
+            if (error) {
+                return {
+                    status: false,
+                };
+            }
+        });
+        return {
+            status: true,
+            path: path,
+        };
+    }
+    return {
+        status: false,
     };
 });

@@ -2,6 +2,9 @@
     <div>
         <h1>TDD todoリスト</h1>
         <button @click="invokeFileOpenProcess()">ファイルを開く</button>
+        <button @click="invokeWriteMarkdownProcess()">
+            ファイルを保存する
+        </button>
         <div class="todo">
             <div class="todo-list">
                 <p>todoリスト</p>
@@ -222,11 +225,55 @@ export default {
         },
         invokeFileOpenProcess: function () {
             ipcRenderer.invoke('file-open').then((data) => {
-                this.importData(data.text);
+                if (data.status) this.importData(data.text);
             });
         },
-        importData: function (jsonData) {
-            this.todoList = jsonData;
+        importData: function (markdownText) {
+            this.todoList = this.readMarkdown(markdownText);
+        },
+        invokeWriteMarkdownProcess: function () {
+            const str = this.getTodoMarkdown();
+            ipcRenderer.invoke('write-file', str).then((data) => {
+                console.log(data);
+            });
+        },
+        readMarkdown: function (markdown) {
+            const strList = markdown.split('\r\n');
+            const todo = [];
+            const inCompleteUnitReg = new RegExp(/^(\- \[ \] )/);
+            const completeUnitReg = new RegExp(/^(\- \[x\] )/);
+            const inCompleteModuleReg = new RegExp(/(  )+(\- \[ \] )/);
+            const completeModuleReg = new RegExp(/(  )+(\- \[x\] )/);
+            strList.forEach((str) => {
+                if (inCompleteUnitReg.test(str)) {
+                    todo.push({
+                        unit: {
+                            title: str.replace(inCompleteUnitReg, ''),
+                            complete: false,
+                            module: [],
+                        },
+                    });
+                } else if (completeUnitReg.test(str)) {
+                    todo.push({
+                        unit: {
+                            title: str.replace(completeUnitReg, ''),
+                            complete: true,
+                            module: [],
+                        },
+                    });
+                } else if (inCompleteModuleReg.test(str)) {
+                    todo[todo.length - 1].unit.module.push({
+                        title: str.replace(inCompleteModuleReg, ''),
+                        complete: false,
+                    });
+                } else if (completeModuleReg.test(str)) {
+                    todo[todo.length - 1].unit.module.push({
+                        title: str.replace(completeModuleReg, ''),
+                        complete: true,
+                    });
+                }
+            });
+            return todo;
         },
     },
 };
@@ -251,7 +298,7 @@ li {
 
 .todo {
     display: grid;
-    grid-template-columns: 10% 50% 30%;
+    grid-template-columns: 10% 80% 10%;
 }
 
 .todo-list {
@@ -261,8 +308,7 @@ li {
 }
 
 .todo-markdown {
-    grid-row: 1/2;
-    grid-column: 3/4;
+    grid-column: 2/3;
     margin-top: 5%;
 }
 

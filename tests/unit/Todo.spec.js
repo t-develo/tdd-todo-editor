@@ -167,14 +167,15 @@ describe('テスト駆動をサポートする', () => {
 });
 
 describe('結果の保存と読み込み(electron)', () => {
-    test('json形式のtodoを読み込んで表示する', () => {
+    test('Markdown形式のファイルを読み込んでToDoリストを表示する', () => {
         // 準備
-        const testJsonData = JSON.parse(JSON.stringify(mockTodoList));
+        const makrdown =
+            '# todo list\r\n\r\n- [ ] テストToDoの表示\r\n  - [x] todoが列挙できる\r\n  - [ ] 大項目と中項目にレベル分け出来る\r\n';
 
         // 実行
-        wrapper.vm.importData(testJsonData);
+        wrapper.vm.readMarkdown(makrdown);
 
         // 検証
-        expect(wrapper.vm.todoList).toEqual(testJsonData);
+        expect(wrapper.vm.todoList).toStrictEqual(mockTodoList);
     });
 });
