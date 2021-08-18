@@ -1,10 +1,12 @@
 <template>
     <div>
         <h1>TDD todoリスト</h1>
-        <button @click="invokeFileOpenProcess()">ファイルを開く</button>
-        <button @click="invokeWriteMarkdownProcess()">
+        <Button class="p-button" @click="invokeFileOpenProcess()"
+            >ファイルを開く</Button
+        >
+        <Button class="p-button" @click="invokeWriteMarkdownProcess()">
             ファイルを保存する
-        </button>
+        </Button>
         <div class="todo">
             <div class="todo-list">
                 <p>todoリスト</p>
@@ -15,13 +17,16 @@
                     >
                         <i
                             v-if="unitTodo.unit.complete"
-                            class="fas fa-check"
+                            class="pi pi-check"
                         ></i>
-                        <i v-else class="fas fa-times"></i>
+                        <i v-else class="pi pi-times"></i>
                         {{ unitTodo.unit.title }}
-                        <button @click="deleteUnitTodo(unitIndex)">
+                        <Button
+                            class="p-button"
+                            @click="deleteUnitTodo(unitIndex)"
+                        >
                             このユニットtodoを削除する
-                        </button>
+                        </Button>
                         <ul class="module-todo-list">
                             <li
                                 v-for="(moduleTodo, moduleIndex) in unitTodo
@@ -30,9 +35,9 @@
                             >
                                 <i
                                     v-if="moduleTodo.complete"
-                                    class="fas fa-check"
+                                    class="pi pi-check"
                                 ></i>
-                                <i v-else class="fas fa-times"></i>
+                                <i v-else class="pi pi-times"></i>
                                 <span
                                     @click="
                                         toggleModuleStatus(
@@ -50,13 +55,14 @@
                                     "
                                     >{{ moduleTodo.title }}</span
                                 >
-                                <button
+                                <Button
+                                    class="p-button"
                                     @click="
                                         deleteModuleTodo(unitIndex, moduleIndex)
                                     "
                                 >
                                     このモジュールtodoを削除する
-                                </button>
+                                </Button>
                             </li>
                         </ul>
                     </li>
@@ -64,14 +70,19 @@
                 <div class="separator"></div>
                 <div>
                     <p>ユニットtodoを追加する</p>
-                    <input
+                    <InputText
+                        class="p-inputtext"
                         type="text"
                         v-model="newUnitTodoTitle"
                         id="new-unit-todo-title"
                     />
-                    <button @click="addUnitTodo()" id="add-unit-todo">
+                    <Button
+                        class="p-button"
+                        @click="addUnitTodo()"
+                        id="add-unit-todo"
+                    >
                         ユニットtodoを追加する
-                    </button>
+                    </Button>
                     <pre>
                         <code>
 {{ publishUnitTodoTestCode(newUnitTodoTitle) }}
@@ -92,14 +103,19 @@
                     </select>
                     <div>
                         <span>∟</span>
-                        <input
+                        <InputText
+                            class="p-inputtext"
                             type="text"
                             v-model="newModuleTodoTitle"
                             id="new-module-todo-title"
                         />
-                        <button @click="addModuleTodo()" id="add-module-todo">
+                        <Button
+                            class="p-button"
+                            @click="addModuleTodo()"
+                            id="add-module-todo"
+                        >
                             モジュールtodoを追加する
-                        </button>
+                        </Button>
                         <pre>
                         <code>
 {{ publishModuleTodoTestCode(newModuleTodoTitle) }}
@@ -110,9 +126,9 @@
             </div>
             <div class="todo-markdown">
                 <span>Markdown プレビュー</span>
-                <button @click="copyToClipboard()">
-                    <i class="fas fa-copy"></i>
-                </button>
+                <Button class="p-button" @click="copyToClipboard()">
+                    <i class="pi pi-copy"></i>
+                </Button>
                 <pre>
                 <code>
 {{ getTodoMarkdown() }}
@@ -221,7 +237,7 @@ export default {
             return `describe('${unitTodoTitle}', () => {\r\n    \r\n});\r\n`;
         },
         publishModuleTodoTestCode: function (moduleTodoTitle) {
-            return `test('${moduleTodoTitle}', () => {\r\n    // 準備\r\n    // 実行\r\n    // 検証\r\n    expect(true).toBeTruthy();\r\n});`;
+            return `test('${moduleTodoTitle}', () => {\r\n    // 準備\r\n    // 実行\r\n    // 検証\r\n    expect(false).toBeTruthy();\r\n});`;
         },
         invokeFileOpenProcess: function () {
             ipcRenderer.invoke('file-open').then((data) => {
@@ -312,11 +328,11 @@ li {
     margin-top: 5%;
 }
 
-.fa-times {
+.pi-times {
     color: red;
 }
 
-.fa-check {
+.pi-check {
     color: lightgreen;
 }
 
