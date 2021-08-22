@@ -1,15 +1,26 @@
 <template>
     <div>
         <h1>TDD todoリスト</h1>
-        <Button class="p-button" @click="invokeFileOpenProcess()"
-            >ファイルを開く</Button
-        >
-        <Button class="p-button" @click="invokeWriteMarkdownProcess()">
-            ファイルを保存する
-        </Button>
+        <Button
+            label="ファイルを開く"
+            class="p-mr-2 p-button p-component"
+            @click="invokeFileOpenProcess()"
+        />
+        <Button
+            label="ファイルを保存する"
+            class="p-mr-2 p-button p-component"
+            @click="invokeWriteMarkdownProcess()"
+        />
+
         <div class="todo">
             <div class="todo-list">
                 <p>todoリスト</p>
+                <Tree
+                    :value="convertedTodoList"
+                    selectionMode="checkbox"
+                    :selectionKeys.sync="selectedKeys"
+                />
+                {{ selectedKeys }}
                 <ul class="unit-todo-list">
                     <li
                         v-for="(unitTodo, unitIndex) in todoList"
@@ -20,13 +31,14 @@
                             class="pi pi-check"
                         ></i>
                         <i v-else class="pi pi-times"></i>
-                        {{ unitTodo.unit.title }}
+                        <span>
+                            {{ unitTodo.unit.title }}
+                        </span>
                         <Button
-                            class="p-button"
+                            label="削除"
+                            class="p-button delete-button"
                             @click="deleteUnitTodo(unitIndex)"
-                        >
-                            このユニットtodoを削除する
-                        </Button>
+                        />
                         <ul class="module-todo-list">
                             <li
                                 v-for="(moduleTodo, moduleIndex) in unitTodo
@@ -56,13 +68,12 @@
                                     >{{ moduleTodo.title }}</span
                                 >
                                 <Button
-                                    class="p-button"
+                                    label="削除"
+                                    class="p-button delete-button"
                                     @click="
                                         deleteModuleTodo(unitIndex, moduleIndex)
                                     "
-                                >
-                                    このモジュールtodoを削除する
-                                </Button>
+                                />
                             </li>
                         </ul>
                     </li>
@@ -71,7 +82,7 @@
                 <div>
                     <p>ユニットtodoを追加する</p>
                     <InputText
-                        class="p-inputtext"
+                        class="p-inputtext p-component"
                         type="text"
                         v-model="newUnitTodoTitle"
                         id="new-unit-todo-title"
@@ -91,20 +102,16 @@
                 </div>
                 <div>
                     <p>モジュールtodoを追加する</p>
-                    <select v-model="unitTodoIndex">
-                        モジュールtodoを追加するユニットtodoを選択する
-                        <option
-                            v-for="(unitTodo, index) in getUnitTodoList"
-                            :key="index"
-                            :value="index"
-                        >
-                            {{ unitTodo }}
-                        </option>
-                    </select>
+                    <Dropdown
+                        v-model="unitTodoIndex"
+                        :options="getUnitTodoList"
+                        optionLabel="title"
+                        optionValue="index"
+                    />
                     <div>
                         <span>∟</span>
                         <InputText
-                            class="p-inputtext"
+                            class="p-inputtext p-component"
                             type="text"
                             v-model="newModuleTodoTitle"
                             id="new-module-todo-title"
@@ -150,16 +157,40 @@ export default {
             newUnitTodoTitle: '',
             newModuleTodoTitle: '',
             unitTodoIndex: null,
+            selectedKeys: [],
+            convertedTodoList: [],
         };
     },
     computed: {
         getUnitTodoList: function () {
-            return this.todoList.map((todo) => {
-                return todo.unit.title;
+            if (this.todoList.length === 0) {
+                return [{ title: '', index: 0 }];
+            }
+            return this.todoList.map((todo, index) => {
+                return { title: todo.unit.title, index: index };
             });
         },
     },
     methods: {
+        convertedPrimeTreeFormatTodo: function () {
+            this.convertedTodoList = this.todoList.map((todo, index) => {
+                const arrayIndex = index;
+                return {
+                    key: index + '',
+                    label: todo.unit.title,
+                    icon: 'pi pi-fw pi-inbox',
+                    complete: todo.unit.complete,
+                    children: todo.unit.module.map((module, index) => {
+                        return {
+                            key: arrayIndex + '-' + index,
+                            label: module.title,
+                            icon: 'pi pi-fw pi-cog',
+                            complete: module.complete,
+                        };
+                    }),
+                };
+            });
+        },
         toggleUnitStatus: function (unitIndex) {
             this.todoList[unitIndex].unit.complete =
                 !this.todoList[unitIndex].unit.complete;
@@ -292,6 +323,25 @@ export default {
             return todo;
         },
     },
+    watch: {
+        todoList: function () {
+            this.convertedPrimeTreeFormatTodo();
+        },
+        convertedTodoList: function () {
+            this.convertedTodoList.forEach((todo) => {
+                todo.children.forEach((children) => {
+                    if (children.complete) {
+                        this.selectedKeys[children.key] = { checked: true };
+                    }
+                });
+                if (todo.complete) {
+                    this.selectedKeys[todo.key] = {
+                        checked: true,
+                    };
+                }
+            });
+        },
+    },
 };
 </script>
 
@@ -342,5 +392,9 @@ li {
 
 .separator {
     border: lightgray dashed 2px;
+}
+
+.delete-button {
+    float: right;
 }
 </style>
