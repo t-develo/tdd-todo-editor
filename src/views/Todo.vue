@@ -14,135 +14,161 @@
 
         <div class="todo">
             <div class="todo-list">
-                <p>todoリスト</p>
-                <Tree
-                    :value="convertedTodoList"
-                    selectionMode="checkbox"
-                    :selectionKeys.sync="selectedKeys"
-                />
-                {{ selectedKeys }}
-                <ul class="unit-todo-list">
-                    <li
-                        v-for="(unitTodo, unitIndex) in todoList"
-                        :key="unitIndex"
-                    >
-                        <i
-                            v-if="unitTodo.unit.complete"
-                            class="pi pi-check"
-                        ></i>
-                        <i v-else class="pi pi-times"></i>
-                        <span>
-                            {{ unitTodo.unit.title }}
-                        </span>
-                        <Button
-                            label="削除"
-                            class="p-button delete-button"
-                            @click="deleteUnitTodo(unitIndex)"
+                <TabView>
+                    <TabPanel header="Todoリスト">
+                        <Tree
+                            :value="convertedTodoList"
+                            selectionMode="checkbox"
+                            :selectionKeys.sync="selectedKeys"
                         />
-                        <ul class="module-todo-list">
+                    </TabPanel>
+                    <TabPanel header="Todoの削除">
+                        <ul class="unit-todo-list">
                             <li
-                                v-for="(moduleTodo, moduleIndex) in unitTodo
-                                    .unit.module"
-                                :key="moduleIndex"
+                                v-for="(unitTodo, unitIndex) in todoList"
+                                :key="unitIndex"
+                                class="p-grid p-my-4"
                             >
-                                <i
-                                    v-if="moduleTodo.complete"
-                                    class="pi pi-check"
-                                ></i>
-                                <i v-else class="pi pi-times"></i>
-                                <span
-                                    @click="
-                                        toggleModuleStatus(
-                                            unitIndex,
-                                            moduleIndex
-                                        ),
-                                            checkUnitStatus(unitIndex)
-                                    "
-                                    class="module-todo"
-                                    :id="
-                                        'module-todo-' +
-                                        unitIndex +
-                                        '-' +
-                                        moduleIndex
-                                    "
-                                    >{{ moduleTodo.title }}</span
-                                >
+                                <div class="p-col-11">
+                                    <i
+                                        v-if="unitTodo.unit.complete"
+                                        class="pi pi-check"
+                                    ></i>
+                                    <i v-else class="pi pi-times times"></i>
+                                    <span>
+                                        {{ unitTodo.unit.title }}
+                                    </span>
+                                </div>
                                 <Button
                                     label="削除"
-                                    class="p-button delete-button"
-                                    @click="
-                                        deleteModuleTodo(unitIndex, moduleIndex)
-                                    "
+                                    class="p-button delete-button p-col-1"
+                                    @click="deleteUnitTodo(unitIndex)"
                                 />
+                                <ul
+                                    class="module-todo-list p-col-11 p-offset-1"
+                                >
+                                    <li
+                                        v-for="(
+                                            moduleTodo, moduleIndex
+                                        ) in unitTodo.unit.module"
+                                        :key="moduleIndex"
+                                        class=""
+                                    >
+                                        <div class="p-col-11">
+                                            <i
+                                                v-if="moduleTodo.complete"
+                                                class="pi pi-check"
+                                            ></i>
+                                            <i
+                                                v-else
+                                                class="pi pi-times times"
+                                            ></i>
+                                            <span
+                                                @click="
+                                                    toggleModuleStatus(
+                                                        unitIndex,
+                                                        moduleIndex
+                                                    ),
+                                                        checkUnitStatus(
+                                                            unitIndex
+                                                        )
+                                                "
+                                                class="module-todo"
+                                                :id="
+                                                    'module-todo-' +
+                                                    unitIndex +
+                                                    '-' +
+                                                    moduleIndex
+                                                "
+                                                >{{ moduleTodo.title }}</span
+                                            >
+                                        </div>
+                                        <Button
+                                            label="削除"
+                                            class="p-button delete-button p-col-1"
+                                            @click="
+                                                deleteModuleTodo(
+                                                    unitIndex,
+                                                    moduleIndex
+                                                )
+                                            "
+                                        />
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
-                    </li>
-                </ul>
-                <div class="separator"></div>
-                <div>
-                    <p>ユニットtodoを追加する</p>
-                    <InputText
-                        class="p-inputtext p-component"
-                        type="text"
-                        v-model="newUnitTodoTitle"
-                        id="new-unit-todo-title"
-                    />
-                    <Button
-                        class="p-button"
-                        @click="addUnitTodo()"
-                        id="add-unit-todo"
-                    >
-                        ユニットtodoを追加する
-                    </Button>
-                    <pre>
-                        <code>
+                    </TabPanel>
+                    <TabPanel header="Todoの追加">
+                        <div>
+                            <p>ユニットtodoを追加する</p>
+                            <InputText
+                                class="p-inputtext p-component"
+                                type="text"
+                                v-model="newUnitTodoTitle"
+                                id="new-unit-todo-title"
+                            />
+                            <Button
+                                class="p-button"
+                                @click="addUnitTodo()"
+                                id="add-unit-todo"
+                            >
+                                ユニットtodoを追加する
+                            </Button>
+                            <pre>
+                                <code>
 {{ publishUnitTodoTestCode(newUnitTodoTitle) }}
-                        </code>
-                    </pre>
-                </div>
-                <div>
-                    <p>モジュールtodoを追加する</p>
-                    <Dropdown
-                        v-model="unitTodoIndex"
-                        :options="getUnitTodoList"
-                        optionLabel="title"
-                        optionValue="index"
-                    />
-                    <div>
-                        <span>∟</span>
-                        <InputText
-                            class="p-inputtext p-component"
-                            type="text"
-                            v-model="newModuleTodoTitle"
-                            id="new-module-todo-title"
-                        />
-                        <Button
-                            class="p-button"
-                            @click="addModuleTodo()"
-                            id="add-module-todo"
-                        >
-                            モジュールtodoを追加する
-                        </Button>
-                        <pre>
-                        <code>
+                                </code>
+                            </pre>
+                        </div>
+                        <div>
+                            <p>モジュールtodoを追加する</p>
+                            <Dropdown
+                                v-model="unitTodoIndex"
+                                :options="getUnitTodoList"
+                                optionLabel="title"
+                                optionValue="index"
+                            />
+                            <div>
+                                <span>∟</span>
+                                <InputText
+                                    class="p-inputtext p-component"
+                                    type="text"
+                                    v-model="newModuleTodoTitle"
+                                    id="new-module-todo-title"
+                                />
+                                <Button
+                                    class="p-button"
+                                    @click="addModuleTodo()"
+                                    id="add-module-todo"
+                                >
+                                    モジュールtodoを追加する
+                                </Button>
+                                <pre>
+                                    <code>
 {{ publishModuleTodoTestCode(newModuleTodoTitle) }}
-                        </code>
-                    </pre>
-                    </div>
-                </div>
-            </div>
-            <div class="todo-markdown">
-                <span>Markdown プレビュー</span>
-                <Button class="p-button" @click="copyToClipboard()">
-                    <i class="pi pi-copy"></i>
-                </Button>
-                <pre>
-                <code>
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                    </TabPanel>
+                    <TabPanel header="Todoのプレビュー">
+                        <div class="todo-markdown">
+                            <span>Markdown プレビュー</span>
+                            <Button class="p-button" @click="copyToClipboard()">
+                                <i class="pi pi-copy"></i>
+                            </Button>
+                            <pre>
+                            <code>
 {{ getTodoMarkdown() }}
-                </code>
-            </pre>
+                            </code>
+                        </pre>
+                        </div>
+                    </TabPanel>
+                </TabView>
+                <div class="separator"></div>
             </div>
         </div>
+        <Toast />
     </div>
 </template>
 
@@ -157,7 +183,7 @@ export default {
             newUnitTodoTitle: '',
             newModuleTodoTitle: '',
             unitTodoIndex: null,
-            selectedKeys: [],
+            selectedKeys: {},
             convertedTodoList: [],
         };
     },
@@ -174,7 +200,7 @@ export default {
     methods: {
         convertedPrimeTreeFormatTodo: function () {
             this.convertedTodoList = this.todoList.map((todo, index) => {
-                const arrayIndex = index;
+                const unitTodoIndex = index;
                 return {
                     key: index + '',
                     label: todo.unit.title,
@@ -182,7 +208,7 @@ export default {
                     complete: todo.unit.complete,
                     children: todo.unit.module.map((module, index) => {
                         return {
-                            key: arrayIndex + '-' + index,
+                            key: unitTodoIndex + '-' + index,
                             label: module.title,
                             icon: 'pi pi-fw pi-cog',
                             complete: module.complete,
@@ -229,6 +255,13 @@ export default {
                 },
             };
             this.todoList.push(newUnitTodo);
+            this.$toast.add({
+                severity: 'success',
+                summary: 'Add unit todo',
+                detail: 'complete!',
+                life: 3000,
+            });
+            this.newUnitTodoTitle = '';
         },
         addModuleTodo: function () {
             const newModuleTodo = {
@@ -236,6 +269,13 @@ export default {
                 complete: false,
             };
             this.todoList[this.unitTodoIndex].unit.module.push(newModuleTodo);
+            this.$toast.add({
+                severity: 'success',
+                summary: 'Add module todo',
+                detail: 'complete!',
+                life: 3000,
+            });
+            this.newModuleTodoTitle = '';
         },
         copyToClipboard: function () {
             const str = this.getTodoMarkdown();
@@ -324,22 +364,36 @@ export default {
         },
     },
     watch: {
-        todoList: function () {
-            this.convertedPrimeTreeFormatTodo();
+        todoList: {
+            handler: function () {
+                this.convertedPrimeTreeFormatTodo();
+            },
+            deep: true,
         },
-        convertedTodoList: function () {
-            this.convertedTodoList.forEach((todo) => {
-                todo.children.forEach((children) => {
-                    if (children.complete) {
-                        this.selectedKeys[children.key] = { checked: true };
+        convertedTodoList: {
+            handler: function () {
+                this.convertedTodoList.forEach((todo) => {
+                    todo.children.forEach((children) => {
+                        if (children.complete) {
+                            this.$set(this.selectedKeys, children.key, {
+                                checked: true,
+                                partialChecked: false,
+                            });
+                            this.$set(this.selectedKeys, todo.key, {
+                                checked: false,
+                                partialChecked: true,
+                            });
+                        }
+                    });
+                    if (todo.complete) {
+                        this.$set(this.selectedKeys, todo.key, {
+                            checked: true,
+                            partialChecked: false,
+                        });
                     }
                 });
-                if (todo.complete) {
-                    this.selectedKeys[todo.key] = {
-                        checked: true,
-                    };
-                }
-            });
+            },
+            deep: true,
         },
     },
 };
@@ -378,7 +432,7 @@ li {
     margin-top: 5%;
 }
 
-.pi-times {
+.times {
     color: red;
 }
 
